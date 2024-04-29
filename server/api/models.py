@@ -1,10 +1,5 @@
 from django.db import models
 
-# class User(models.Model): 
-#     username = models.CharField()
-#     password = models.CharField()
-
-class Pokemon(models.Model):
-    name = models.CharField(max_length=100)
-    avatar = models.URLField(max_length=100)
+class PokemonModel(models.Model):
+    fav_pokemon = models.CharField(max_length=100)
     owner = models.ForeignKey('auth.user', related_name='pokemon', on_delete=models.CASCADE)
