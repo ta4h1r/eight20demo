@@ -1,7 +1,6 @@
 import { Form } from "react-router-dom";
 
-export default function Login({ setUser }) {
-  // setUser(false);
+export default function Login() {
   return (
     <Form method="post" action="/login">
       <div style={{ padding: 10 }}>
