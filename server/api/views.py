@@ -36,7 +36,7 @@ class UserRegister(APIView):
 
 class UserLogin(APIView):
     permission_classes = (permissions.AllowAny,)
-    # authentication_classes = (SessionAuthentication,)
+    authentication_classes = (SessionAuthentication,)
 
     def post(self, request):
         data = request.data
@@ -60,7 +60,7 @@ class UserLogout(APIView):
 
 class UserView(generics.ListAPIView):
     permission_classes = (permissions.IsAuthenticated,)
-    # authentication_classes = (SessionAuthentication, )
+    authentication_classes = (SessionAuthentication, )
 
     def get(self, request):
         serializer = UserSerializer(request.user)
@@ -69,7 +69,7 @@ class UserView(generics.ListAPIView):
 
 class UserPokemon(generics.RetrieveAPIView):
     permission_classes = (permissions.IsAuthenticated,)
-    # authentication_classes = (SessionAuthentication, )
+    authentication_classes = (SessionAuthentication, )
 
     queryset = PokemonModel.objects.all()
     serializer_class = PokemonSerializer
