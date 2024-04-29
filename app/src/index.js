@@ -37,7 +37,7 @@ const router = createBrowserRouter(
               // password: formdata.get("password"),
             });
             // setUser(true);
-            return { res };
+            return res;
           }
           default: {
             throw new Response("", { status: 405 });

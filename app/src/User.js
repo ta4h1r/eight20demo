@@ -1,8 +1,10 @@
 import React from "react";
-import { Form, Navigate } from "react-router-dom";
+import { Form, Navigate, useActionData, useLoaderData } from "react-router-dom";
 
-export default function User({ user }) {
-  if (!user) {
+export default function User() {
+  const res = useActionData();
+
+  if (res.status != 200) {
     return <Navigate to="/" replace />;
   }
 
