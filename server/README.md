@@ -8,4 +8,4 @@
 3. ```cd ``` into ```app``` and run ```npm i && npm run start```
 4. Navigate to http://localhost:8000/api/register to create a new user
 5. Enter the following JSON and click post ```{ "username":"<some-username>", "password": "supersecret", "fav_pokemon": "<my-pokemon>" }``` 
-6. Navigate to http://localhost:3000/login and login to the frontend with your credntials.
+6. Navigate to http://localhost:3000/login and login to the frontend with your credentials.
