@@ -3,11 +3,10 @@ from api import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
-    path('', views.PokemonList.as_view()),
-    path('<str:pk>', views.PokemonRetrieve.as_view()),
-    path('create/', views.PokemonAdd.as_view()),
-    path('users/', views.UserList.as_view()),
-    path('users/<int:pk>/', views.UserDetail.as_view()),
+	path('register', views.UserRegister.as_view(), name='register'),
+	path('login', views.UserLogin.as_view(), name='login'),
+	path('logout', views.UserLogout.as_view(), name='logout'),
+	path('user', views.UserView.as_view(), name='user'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

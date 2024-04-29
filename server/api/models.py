@@ -1,5 +1,9 @@
 from django.db import models
 
+# class User(models.Model): 
+#     username = models.CharField()
+#     password = models.CharField()
+
 class Pokemon(models.Model):
     name = models.CharField(max_length=100)
     avatar = models.URLField(max_length=100)

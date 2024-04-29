@@ -1,113 +1,55 @@
-import {
-  BrowserRouter as Router,
-  useRoutes,
-  Link,
-  Navigate,
-  useNavigate,
-} from "react-router-dom";
-import { useState } from "react";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Login from "./Login";
+import User from "./User";
+import axios from "axios";
 
-function NoMatch() {
+axios.defaults.xsrfCookieName = "csrftoken";
+axios.defaults.xsrfHeaderName = "X-CSRFToken";
+axios.defaults.withCredentials = true;
+
+const client = axios.create({
+  baseURL: "http://127.0.0.1:8000",
+});
+
+export default function App() {
+  const [user, setUser] = React.useState(false);
   return (
-    <div style={{ padding: 20 }}>
-      <h2>404: Page Not Found</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adip.</p>
-    </div>
-  );
-}
-
-function User({ user }) {
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>User View</h2>
-      <p>Lorem ipsum dolor sit amet, consectetur adip.</p>
-    </div>
-  );
-}
-
-function Login({ onLogin }) {
-  const [creds, setCreds] = useState({});
-  const navigate = useNavigate();
-
-  function handleLogin() {
-    // For demonstration purposes only. Never use these checks in production!
-    // Use a proper authentication implementation
-    if (creds.username === "admin" && creds.password === "123") {
-      onLogin && onLogin({ username: creds.username });
-      navigate("/user");
-    }
-  }
-  return (
-    <div style={{ padding: 10 }}>
-      <br />
-      <span>Username:</span>
-      <br />
-      <input
-        type="text"
-        onChange={(e) => setCreds({ ...creds, username: e.target.value })}
+    <Routes>
+      <Route
+        path="/login"
+        element={<User user={user} />}
+        action={async ({ request }) => {
+          switch (request.method) {
+            case "POST": {
+              const formdata = await request.formData();
+              const res = await client.post(`/api/login`, {
+                username: "admin",
+                password: "admin123",
+                // username: formdata.get("username"),
+                // password: formdata.get("password"),
+              });
+              setUser(true);
+              return { res };
+            }
+            default: {
+              throw new Response("", { status: 405 });
+            }
+          }
+        }}
       />
-      <br />
-      <span>Password:</span>
-      <br />
-      <input
-        type="password"
-        onChange={(e) => setCreds({ ...creds, password: e.target.value })}
+      ,
+      <Route
+        path="/logout"
+        element={<Login />}
+        loader={async () => {
+          const res = await client.post(`/api/logout`, {
+            method: "post",
+          });
+          return { res };
+        }}
       />
-      <br />
-      <br />
-      <button onClick={handleLogin}>Login</button>
-    </div>
+      ,
+    </Routes>
   );
 }
-
-function AppLayout() {
-  const [user, setUser] = useState();
-  const navigate = useNavigate();
-
-  function logOut() {
-    setUser(null);
-    navigate("/login");
-  }
-
-  function Routes(user) {
-    const element = useRoutes([
-      { path: "/", element: <Login onLogin={setUser} /> },
-      { path: "/login", element: <Login onLogin={setUser} /> },
-      { path: "/user", element: <User user={user} /> },
-      { path: "*", element: <NoMatch /> },
-    ]);
-    return element;
-  }
-
-  return (
-    <>
-      <nav style={{ margin: 10 }}>
-        {!user && (
-          <Link to="/login" style={{ padding: 5 }}>
-            Login
-          </Link>
-        )}
-        {user && (
-          <span onClick={logOut} style={{ padding: 5, cursor: "pointer" }}>
-            Logout
-          </span>
-        )}
-      </nav>
-      <Routes />
-    </>
-  );
-}
-
-function App() {
-  return (
-    <Router>
-      <AppLayout />
-    </Router>
-  );
-}
-
-export default App;

@@ -1,20 +1,30 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from api.models import Pokemon
+from django.contrib.auth import get_user_model, authenticate
+from api.validations import ValidationError
 
+UserModel = get_user_model()
 
-class PokemonSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+class UserRegisterSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserModel
+		fields = '__all__'
+	def create(self, clean_data):
+		user_obj = UserModel.objects.create_user(email=clean_data['email'], password=clean_data['password'])
+		user_obj.username = clean_data['username']
+		user_obj.save()
+		return user_obj
 
-    class Meta:
-        model = Pokemon
-        fields = ['id', 'name', 'avatar', 'owner']
-
+class UserLoginSerializer(serializers.Serializer):
+	username = serializers.CharField()
+	password = serializers.CharField()
+	##
+	def check_user(self, clean_data):
+		user = authenticate(username=clean_data['username'], password=clean_data['password'])
+		if not user:
+			raise ValidationError('user not found')
+		return user
 
 class UserSerializer(serializers.ModelSerializer):
-    pokemon = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Pokemon.objects.all())
-
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'pokemon']
+	class Meta:
+		model = UserModel
+		fields = ('email', 'username')
